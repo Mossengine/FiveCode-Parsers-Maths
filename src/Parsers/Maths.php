@@ -1,5 +1,7 @@
 <?php namespace Mossengine\FiveCode\Parsers;
 
+use Mossengine\FiveCode\Exceptions\ParserNotAllowedException;
+use Mossengine\FiveCode\Exceptions\ParserNotFoundException;
 use Mossengine\FiveCode\FiveCode;
 use Mossengine\Helper;
 
@@ -26,11 +28,13 @@ class Maths extends ParsersAbstract {
      * @param FiveCode $fiveCode
      * @param array $mixedData
      * @return array|\ArrayAccess|mixed|null
+     * @throws ParserNotAllowedException
+     * @throws ParserNotFoundException
      */
     public static function addition(FiveCode $fiveCode, array $mixedData = []) {
-        $value = array_shift($mixedData);
+        $value = floatval($fiveCode->instructions(array_shift($mixedData)));
         foreach ($mixedData as $arg) {
-            $value += floatval($arg);
+            $value += floatval($fiveCode->instructions($arg));
         }
         return $fiveCode->result($value);
     }
@@ -39,11 +43,13 @@ class Maths extends ParsersAbstract {
      * @param FiveCode $fiveCode
      * @param array $mixedData
      * @return array|\ArrayAccess|mixed|null
+     * @throws ParserNotAllowedException
+     * @throws ParserNotFoundException
      */
     public static function subtract(FiveCode $fiveCode, array $mixedData = []) {
-        $value = array_shift($mixedData);
+        $value = floatval($fiveCode->instructions(array_shift($mixedData)));
         foreach ($mixedData as $arg) {
-            $value -= floatval($arg);
+            $value -= floatval($fiveCode->instructions($arg));
         }
         return $fiveCode->result($value);
     }
@@ -52,11 +58,13 @@ class Maths extends ParsersAbstract {
      * @param FiveCode $fiveCode
      * @param array $mixedData
      * @return array|\ArrayAccess|mixed|null
+     * @throws ParserNotAllowedException
+     * @throws ParserNotFoundException
      */
     public static function divide(FiveCode $fiveCode, array $mixedData = []) {
-        $value = array_shift($mixedData);
+        $value = floatval($fiveCode->instructions(array_shift($mixedData)));
         foreach ($mixedData as $arg) {
-            $value /= floatval($arg);
+            $value /= floatval($fiveCode->instructions($arg));
         }
         return $fiveCode->result($value);
     }
@@ -65,11 +73,13 @@ class Maths extends ParsersAbstract {
      * @param FiveCode $fiveCode
      * @param array $mixedData
      * @return array|\ArrayAccess|mixed|null
+     * @throws ParserNotAllowedException
+     * @throws ParserNotFoundException
      */
     public static function multiply(FiveCode $fiveCode, array $mixedData = []) {
-        $value = array_shift($mixedData);
+        $value = floatval($fiveCode->instructions(array_shift($mixedData)));
         foreach ($mixedData as $arg) {
-            $value *= floatval($arg);
+            $value *= floatval($fiveCode->instructions($arg));
         }
         return $fiveCode->result($value);
     }
@@ -78,12 +88,14 @@ class Maths extends ParsersAbstract {
      * @param FiveCode $fiveCode
      * @param array $mixedData
      * @return array|\ArrayAccess|mixed|null
+     * @throws ParserNotAllowedException
+     * @throws ParserNotFoundException
      */
     public static function random(FiveCode $fiveCode, array $mixedData = []) {
         return $fiveCode->result(
             mt_rand(
-                Helper::Array()->Get($mixedData, 0, 0),
-                Helper::Array()->Get($mixedData, 1, 1)
+                $fiveCode->instructions(Helper::Array()->Get($mixedData, 0, 0)),
+                $fiveCode->instructions(Helper::Array()->Get($mixedData, 1, 1))
             )
         );
     }
